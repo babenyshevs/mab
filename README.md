@@ -1,7 +1,13 @@
 PROJECT: Multi-Armed Bandit algorithm
 ==============================
 
-Framework for training and visualisation of MAB on synthetic data
+Framework for training and visualization of Multi-Armed Bandit (MAB) on synthetic data. The purpose of the repository is to illustrate and compare A/B testing to MAB algorithms when choosing between competing options (such as web interface, chatbot, recommender engine, ...).
+
+# Data
+The original data for evaluation consists of quality metrics from a production chatbot. Obviously, such data cannot be uploaded to GitHub. Therefore, a reward-generating module has been developed. This module allows for the generation of data points following a given parameterized distribution.
+
+The distribution itself, as well as its parameters, are chosen to closely mimic the behavior of a real production chatbot.
+
 # Theoretical framework
 
 ## Reinforcement learning
@@ -27,8 +33,21 @@ Test faster, smarter, and more efficient.
 <img src="./reports/figures/readme/ab_vs_mab_revenue.png" width="600">
 
 
-### Multi-armed bandit (formulas)
+## Notations and formulas
 
+### Markov decision process:
+#### notations:
+$s \in \mathcal{S}$: set of states.\
+$a \in \mathcal{A}$: set of actions.\
+$r \in \mathcal{R}$: set of rewards.\
+$P(s'|s,a)$: probability of transitioning to state $s'$ given state $s$ and action $a$.\
+$R(s,a,s')$: reward received after transitioning from state $s$ to state $s'$ by taking action $a$.\
+$\gamma$: discount factor.
+
+#### state transition probability (Markov's property):
+$$P(s_{t+1}|s_t, a_t, s_{t-1}, a_{t-1}) = P(s_{t+1}|s_t, a_t)$$
+
+### Multi-armed bandit:
 #### notations:
 $K$ : Number of arms (actions). \
 $t$ : Time step. \
@@ -72,11 +91,8 @@ $$
 $c$ : constant controlling the level of exploration \
 $N(a)$ : number of times action $a$ has been selected
 
-### Reinforcement learning (formulas)
+### Reinforcement learning - **TBC**
 #### Notations
-$s$: State.\
-$a$: Action.\
-$r$: Reward.\
 $\pi(a|s)$: Policy, probability of taking action $a$ in state $s$.\
 $V(s)$: Value function for state $s$.\
 $Q(s,a)$: Action-value function for state-action pair $(s,a)$.\
