@@ -11,16 +11,14 @@ class BanditVisualizer:
         self.num_fit_rounds = num_fit_rounds
         self.num_next_steps = num_next_steps
         self.figsize = figsize
-        self.prepare_data()
 
-    def prepare_data(self):
+        # fit bandit and generate data
         self.bandit.fit(self.num_fit_rounds)
-        for _ in range(self.num_next_steps):
-            self.bandit.next_round()
+        self.bandit.run_n_rounds(self.num_next_steps)
 
     def plot_cumulative_values(self, log_scale=False):
-        arms_cum_values = self.bandit.arm_cum_log
-        reward_cum_values = self.bandit.reward_cum_log
+        arms_cum_values = self.bandit.arm_pull_cum_log
+        reward_cum_values = self.bandit.arm_reward_cum_log
         expectations = self.bandit.expectations_log
 
         fig, axs = plt.subplots(3, 1, figsize=self.figsize, sharex=True)

@@ -43,6 +43,6 @@ def bootstrap(
     means = []
     for _ in range(repeats):
         arr = choice(a=data, size=sample_size, replace=True)
-        mean = np.round(np.mean(arr), 2) + bias
+        mean = np.mean(arr) + bias
         means.append(mean)
     return means
