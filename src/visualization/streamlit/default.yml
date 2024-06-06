@@ -1,0 +1,42 @@
+# naming
+algorithms: ["Classic A-B test", "Multi-Armed Bandit"]
+reward_variable: "Solution rate"
+trial_variable: "Trial"
+
+# visualization page
+trials:
+  value: 100
+  min: 10
+  max: 2000
+show_cumulative: True
+use_boostrap: False
+current_iteration: 0
+graph_delays: [0.001, 0.01, 0.1, 1]
+
+# arms
+arms_config:
+  Superstar:
+    distribution: gauss
+    params: [0.7, 0.05]
+  Old Navy:
+    distribution: gauss
+    params: [0.65, 0.02]
+  Ugly Duck:
+    distribution: uniform
+    params: [0.60, 0.75]
+
+# mab
+mab_config:
+  exploration_share: 0.2
+  method: epsilon_greedy
+  method_params:
+    epsilon: 0.1
+
+# mab_methods
+mab_methods:
+  epsilon_greedy:
+    epsilon: 0.1
+  softmax:
+    tau: 0.1
+  ucb:
+    alpha: 1.0

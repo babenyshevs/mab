@@ -1,30 +1,19 @@
+import os
+
 import streamlit as st
 
-from src.models.mab import MultiArmedBandit
+from src.general.io import read_yaml
 
-st.set_page_config(
-    page_title="Hello",
-    page_icon="👋",
-)
+st.set_page_config(layout="wide")
 
-st.write("# Welcome to Streamlit! 👋")
+if "cfg" not in st.session_state:
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    st.session_state["cfg"] = read_yaml(f"{dir_path}/default.yml")
 
-st.sidebar.success("Select a demo above.")
 
-st.markdown(
-    """
-    Streamlit is an open-source app framework built specifically for
-    Machine Learning and Data Science projects.
-    **👈 Select a demo from the sidebar** to see some examples
-    of what Streamlit can do!
-    ### Want to learn more?
-    - Check out [streamlit.io](https://streamlit.io)
-    - Jump into our [documentation](https://docs.streamlit.io)
-    - Ask a question in our [community
-        forums](https://discuss.streamlit.io)
-    ### See more complex demos
-    - Use a neural net to [analyze the Udacity Self-driving Car Image
-        Dataset](https://github.com/streamlit/demo-self-driving)
-    - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
-"""
-)
+st.title("Comparison of A/B test and MAB on data")
+st.header("Hello Page")
+st.write("Welcome to the MAB vs. A/B Test Visualization App.")
+st.write("Use the sidebar to navigate to different pages.")
+st.write("- Configuration: Adjust reward settings for different arms.")
+st.write("- Visualization: Compare the performance of A/B Testing and Multi-Armed Bandit.")
