@@ -1,5 +1,7 @@
 import streamlit as st
 
+from src.models.mab import MultiArmedBandit
+
 st.set_page_config(
     page_title="Hello",
     page_icon="👋",
