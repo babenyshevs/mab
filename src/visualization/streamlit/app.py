@@ -65,7 +65,7 @@ class DynamicPlotApp:
         Run the Streamlit app to visualize the rewards.
         """
         st.set_page_config(layout="wide")
-        # st.title(f"Comparison of A/B test and MAB on {self.reward_var} data")
+        st.title(f"Comparison of A/B test and MAB on {self.reward_var} data")
 
         # Sidebar for page selection
         page = st.sidebar.selectbox("Choose a page", ["Configuration", "Visualization"])
@@ -198,7 +198,7 @@ class DynamicPlotApp:
         fig.update_layout(
             xaxis_title=self.attempt_var,
             yaxis_title=self.reward_var,
-            # title=f"{alg_name}: achieved {self.reward_var}",
+            title=f"{alg_name}: achieved {self.reward_var}",
         )
         fig.update_yaxes(type="log")
 
@@ -224,7 +224,7 @@ class DynamicPlotApp:
         fig.update_layout(
             xaxis_title=self.reward_var,
             barmode="overlay",
-            # title=f"{alg_name}: histogram of {self.reward_var}",
+            title=f"{alg_name}: histogram of {self.reward_var}",
         )
         for arm_id in self.arm_ids:
             fig.add_trace(
@@ -329,9 +329,9 @@ class DynamicPlotApp:
 
             # Update Streamlit plots
             for alg_name, st_scatter in st_scatters.items():
-                # go_scatters[alg_name].update_layout(
-                #     title=f"{alg_name}: achieved {self.reward_var} ({int(total_y[alg_name])})"
-                # )
+                go_scatters[alg_name].update_layout(
+                    title=f"{alg_name}: achieved {self.reward_var} ({int(total_y[alg_name])})"
+                )
                 st_scatter.plotly_chart(
                     go_scatters[alg_name],
                     use_container_width=True,
@@ -341,9 +341,9 @@ class DynamicPlotApp:
                 st_histogram.plotly_chart(go_histogtrams[alg_name], use_container_width=True)
 
             for alg_name, st_bar in st_bars.items():
-                # go_bars[alg_name].update_layout(
-                #     title=f"{alg_name}: total trials ({int(total_trials[alg_name])})"
-                # )
+                go_bars[alg_name].update_layout(
+                    title=f"{alg_name}: total trials ({int(total_trials[alg_name])})"
+                )
                 st_bar.plotly_chart(go_bars[alg_name], use_container_width=True)
 
             # # take a screenshot:
