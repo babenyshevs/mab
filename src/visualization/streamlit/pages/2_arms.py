@@ -107,7 +107,6 @@ def update_configuration(new_config: dict) -> None:
     """
     st.session_state["cfg"]["arms_config"] = new_config
     st.sidebar.success("Reward configuration updated!")
-    st.write(st.session_state["cfg"]["arms_config"])
 
 
 def reset_to_defaults() -> None:
@@ -117,7 +116,6 @@ def reset_to_defaults() -> None:
     dir_path = os.path.dirname(os.path.realpath(__file__)).replace("pages", "")
     st.session_state["cfg"]["arms_config"] = read_yaml(f"{dir_path}default.yml")["arms_config"]
     st.sidebar.success("Reverted to defaults!")
-    st.write(st.session_state["cfg"]["arms_config"])
 
 
 # Display arm configuration in the left column
