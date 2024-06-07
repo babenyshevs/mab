@@ -289,15 +289,20 @@ with st.expander("components list", expanded=False):
     - It provides feedback to the agent based on its actions.
     3. State:
     - A specific situation or configuration that the agent perceives from the environment.
+    - $s \in \mathcal{S}$: set of states.
     4. Action:
     - The decision or choice made by the agent at each time step.
     - Actions affect the state and future rewards.
+    - $a \in \mathcal{A}$: set of actions.
     5. Reward:
     - Feedback from the environment to the agent after each action.
     - It quantifies the immediate benefit or desirability of an action.
+    - $r \in \mathcal{R}$: set of rewards.
     6. Policy:
     - The strategy or rule that the agent follows to select actions.
     - It maps states to actions and defines the agent's behavior.
+    - $P(s'|s,a)$: probability of transitioning to state $s'$ given state $s$ and action $a$.
+    - $R(s,a,s')$: reward received after transitioning from state $s$ to state $s'$ by taking action $a$.
     """
     )
 
@@ -338,13 +343,16 @@ with st.expander("list of concepts", expanded=False):
         - Balancing between trying new actions (exploration) and choosing actions that are known to yield 
         high rewards (exploitation).
         2. **Temporal Credit Assignment:**
-        - Determining which actions are responsible for the received rewards, considering delayed consequences.
+        - Determining which actions are responsible for the received rewards, considering delayed 
+        consequences.
         3. **Markov Decision Processes (MDPs):**
         - Formal framework used to model RL problems, consisting of states, actions, transition probabilities, 
         and rewards.
+        - $$P(s_{t+1}|s_t, a_t, s_{t-1}, a_{t-1}) = P(s_{t+1}|s_t, a_t)$$
         4. **Value Functions:**
         - Functions that estimate the expected cumulative reward of being in a particular state or t
         aking a specific action.
+        - $$Q_t(a) = \\frac{\sum_{i=1}^{t-1} R_i \cdot \mathbb{1}_{A_i=a}} {\sum_{i=1}^{t-1} \mathbb{1}_{A_i=a}}$$
         5. **Policy Optimization:**
         - Techniques to improve the agent's policy over time, aiming to maximize long-term rewards.
         """
@@ -444,52 +452,122 @@ st.markdown(
     compared to the full RL framework but shares essential characteristics that are crucial 
     for understanding RL algorithms.
 
-    ### Multi-Armed Bandit Problem
-
-    ### Description:
-    - The MAB problem is a scenario where an agent faces multiple options (arms) to choose from, each providing a random reward from an unknown probability distribution.
-    - The agent's goal is to maximize the total reward over a series of trials by strategically selecting arms.
-
-    ### Key Concepts:
+    ### Multi-armed bandit problem
+    - The MAB problem is a scenario where an agent faces multiple options (arms) to choose from, 
+    each providing a random reward from an unknown probability distribution.
+    - The agent's goal is to maximize the total reward over a series of trials by strategically 
+    selecting arms.
+    """
+)
+st.image("./reports/figures/streamlit/mab.png", width=800)
+st.markdown(
+    """
+    ### Why to use it business setting?
+    Short answer - to test faster, smarter, and more efficient.
+    **Give bot second chance** - they are constantly evolving, the best today isn't necessery the best tomorrow and vice  versa
+        """
+)
+st.image("./reports/figures/streamlit/ab_vs_mab.png", width=800)
+st.markdown(
+    """
+**Maximize customer satisfaction** - poor performing bots are cut quickly from the traffic
+     """
+)
+st.image("./reports/figures/streamlit/ab_vs_mab_revenue.png", width=800)
+st.markdown(
+    """
+    ### Key concepts
+    arms (action options) and share of the exploration vs. explotation (sometimes also called fit/predict)
+    are the main concepts of the MAB algorithm
+    """
+)
+with st.expander("details", expanded=False):
+    st.markdown(
+        """    
     1. **Arms:**
     - Each arm represents an option or action the agent can take.
     - Pulling an arm results in a reward drawn from a probability distribution specific to that arm.
-
     2. **Exploration vs. Exploitation:**
     - **Exploration:** Trying different arms to gather information about their reward distributions.
     - **Exploitation:** Selecting the arm believed to offer the highest reward based on current knowledge.
     - The trade-off between exploration and exploitation is a central challenge in MAB problems.
-
-    ### Example Algorithms:
+    """
+    )
+st.markdown(
+    """
+    ### Learning methods:
     1. **Epsilon-Greedy:**
     - With probability ε, the agent explores a random arm.
     - With probability 1-ε, the agent exploits the best-known arm.
+    """
+)
+st.latex(
+    r"""
+    A_t = 
+    \begin{cases}
+    \arg\max_a Q_t(a) & \text{with probability } 1 - \varepsilon \\
+    \text{random action} & \text{with probability } \varepsilon
+    \end{cases}
+    """
+)
+st.markdown(
+    """
     2. **Upper Confidence Bound (UCB):**
-    - Selects arms based on an optimistic estimate of their potential rewards, balancing exploration and exploitation.
+    - Selects arms based on an optimistic estimate of their potential rewards, balancing exploration 
+    and exploitation.
+    """
+)
+st.latex(
+    r"""
+    A_t = \text{argmax}_a \left( Q(a) + c \sqrt{\frac{\ln(t)}{N(a)}} \right)
+    $$
+
+    $c$: constant controlling the level of exploration
+    $N(a)$: number of times action $a$ has been selected
+    """
+)
+st.markdown(
+    """
     3. **Thompson Sampling:**
     - Uses Bayesian inference to select arms based on the probability of each arm being optimal.
 
-    ## Relationship to Reinforcement Learning
-
-    ### Simplified Decision-Making:
+    4. **Softmax:**
+   - Computes the probability of selecting each arm using a softmax function, which gives higher 
+   probabilities to arms with higher expected rewards.
+    """
+)
+st.latex(
+    r"""
+    P(a) = \frac{e^{Q(a) / \tau}}{\sum_{i=1}^{k} e^{Q(i) / \tau}}
+    """
+)
+st.markdown(
+    """
+    ### Relationship to reinforcement learning
+    The Multi-Armed Bandit problem is a critical subfield of reinforcement learning that highlights 
+    the fundamental challenge of balancing exploration and exploitation. Understanding MAB problems 
+    provides valuable insights and techniques that are directly applicable to more complex RL scenarios. 
+    By studying MAB, one gains a foundational understanding of decision-making under uncertainty, 
+    which is essential for developing effective RL algorithms.    
+    """
+)
+with st.expander("details", expanded=False):
+    st.markdown(
+        """    
+    #### Simplified Decision-Making:
     - The MAB problem is a simplified version of RL problems where there is no state transition—each decision is independent of previous ones.
     - In RL, the agent must consider how actions influence future states and rewards, adding complexity.
 
-    ### Core Principles:
+    #### Core Principles:
     - The exploration-exploitation dilemma in MAB is directly applicable to RL, where the agent must decide whether to explore new actions or exploit known rewarding actions.
     - Strategies developed for MAB problems often inspire RL exploration strategies.
 
-    ### Component of RL Algorithms:
+    #### Component of RL Algorithms:
     - MAB solutions are often embedded within RL algorithms to handle specific subproblems.
     - For example, during the action selection phase in RL, MAB methods like epsilon-greedy or UCB can be used to decide which action to take.
 
-    ### Learning Without State Transitions:
+    #### Learning Without State Transitions:
     - MAB focuses solely on optimizing action selection in a static context without considering state transitions, providing a clear view of the action-reward relationship.
     - This focus helps in developing intuition and techniques for more complex RL scenarios where states and transitions must be considered.
-
-    ## Summary
-
-    The Multi-Armed Bandit problem is a critical subfield of reinforcement learning that highlights the fundamental challenge of balancing exploration and exploitation. Understanding MAB problems provides valuable insights and techniques that are directly applicable to more complex RL scenarios. By studying MAB, one gains a foundational understanding of decision-making under uncertainty, which is essential for developing effective RL algorithms.
-
 """
-)
+    )
