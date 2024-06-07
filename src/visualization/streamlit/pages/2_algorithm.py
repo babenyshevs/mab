@@ -4,7 +4,7 @@ import streamlit as st
 
 from src.general.io import read_yaml
 
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="Algorithms", page_icon="📊", layout="wide")
 
 if "cfg" not in st.session_state:
     dir_path = os.path.dirname(os.path.realpath(__file__)).replace("pages", "")
@@ -38,7 +38,7 @@ def display_bandit_methods() -> dict:
     active_params = st.session_state["cfg"]["mab_config"]["method_params"]
 
     selected_method = st.radio(
-        label="Select a MAB method",
+        label="Algorithm",
         options=methods.keys(),
         index=list(methods.keys()).index(active_method),
     )

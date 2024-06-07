@@ -1,11 +1,11 @@
 # naming
 algorithms: ["Classic A-B test", "Multi-Armed Bandit"]
-reward_variable: "Solution rate"
+reward_variable: "Acceptable answer rate"
 trial_variable: "Trial"
 
 # visualization page
 trials:
-  value: 100
+  value: 300
   min: 10
   max: 2000
 show_cumulative: True

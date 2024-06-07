@@ -12,6 +12,8 @@ from src.models.mab import MultiArmedBandit
 from src.visualization.plots import get_bars, get_histograms, get_scatters
 from src.visualization.streamlit.data import generate_data
 
+st.set_page_config(page_title="Simulation", page_icon="📊", layout="wide")
+
 
 def initialize_config() -> Dict:
     """Initialize the configuration from the YAML file.
@@ -31,7 +33,7 @@ def configure_controls(trials: int, mab_trials: int, arm_ids: List[str]) -> None
         mab_trials (int): Total number of MAB trials.
         arm_ids (List[str]): List of arm identifiers.
     """
-    st.sidebar.title("Controls")
+    # st.sidebar.title("Controls")
     st.session_state["cfg"]["sleep_time"] = st.sidebar.radio(
         "Graph delay (seconds):", st.session_state["cfg"]["graph_delays"], horizontal=True
     )
@@ -52,10 +54,9 @@ def configure_controls(trials: int, mab_trials: int, arm_ids: List[str]) -> None
 
     st.sidebar.write(
         f"""
-        MAB trials: \n 
-        - total: {mab_trials} \n 
-        - explore: {int(mab_trials * st.session_state["cfg"]["mab_config"]["exploration_share"])} \n
-        - exploit: {mab_trials - int(mab_trials * st.session_state["cfg"]["mab_config"]["exploration_share"])} \n
+        Total: {mab_trials} 
+        (explore {int(mab_trials * st.session_state["cfg"]["mab_config"]["exploration_share"])},
+         exploit {mab_trials - int(mab_trials * st.session_state["cfg"]["mab_config"]["exploration_share"])})
         """
     )
     st.sidebar.markdown("---")
@@ -186,7 +187,6 @@ def update_plots(
 
 def main() -> None:
     """Main function to run the simulation and display results using Streamlit."""
-    st.set_page_config(layout="wide")
 
     if "cfg" not in st.session_state:
         st.session_state["cfg"] = initialize_config()
@@ -214,6 +214,8 @@ def main() -> None:
             arm_ids, reward_var_name, mab_trials
         )
 
+        progress_bar = st.sidebar.progress(0)
+
         for iter in range(st.session_state["cfg"]["current_iteration"], mab_trials):
             update_plots(
                 iter,
@@ -230,8 +232,10 @@ def main() -> None:
                 reward_var_name,
             )
             time.sleep(st.session_state["cfg"]["sleep_time"])
+            progress_bar.progress(iter / mab_trials)
 
         st.session_state["cfg"]["current_iteration"] = 0
+        progress_bar.empty()
 
 
 if __name__ == "__main__":

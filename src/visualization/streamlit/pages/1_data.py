@@ -6,7 +6,7 @@ import streamlit as st
 
 from src.general.io import read_yaml
 
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="Data", page_icon="📊", layout="wide")
 
 # Initialize configuration if not already in session state
 if "cfg" not in st.session_state:
@@ -27,48 +27,48 @@ def display_arm_configuration() -> dict:
     """
     new_arms_config = {}
     i = 0
-    with st.expander("Distributions", expanded=True):
-        columns = st.columns(spec=len(st.session_state["cfg"]["arms_config"]), gap="large")
-        for arm_id, config in st.session_state["cfg"]["arms_config"].items():
-            with columns[i]:
-                dist = st.radio(
-                    label=arm_id,
-                    options=["gauss", "uniform"],
-                    index=["gauss", "uniform"].index(config["distribution"]),
-                    key=f"dist_{arm_id}",
-                    horizontal=True,
+
+    columns = st.columns(spec=len(st.session_state["cfg"]["arms_config"]), gap="large")
+    for arm_id, config in st.session_state["cfg"]["arms_config"].items():
+        with columns[i]:
+            dist = st.radio(
+                label=arm_id,
+                options=["gauss", "uniform"],
+                index=["gauss", "uniform"].index(config["distribution"]),
+                key=f"dist_{arm_id}",
+                horizontal=True,
+            )
+            if dist == "gauss":
+                mean = st.number_input(
+                    "Mean",
+                    value=config["params"][0],
+                    key=f"mean_{arm_id}",
                 )
-                if dist == "gauss":
-                    mean = st.number_input(
-                        "Mean",
-                        value=config["params"][0],
-                        key=f"mean_{arm_id}",
-                    )
-                    std = st.number_input(
-                        "Standard Deviation",
-                        value=config["params"][1],
-                        key=f"std_{arm_id}",
-                    )
-                    new_arms_config[arm_id] = {
-                        "distribution": dist,
-                        "params": [mean, std],
-                    }
-                elif dist == "uniform":
-                    lower = st.number_input(
-                        "Lower Bound",
-                        value=config["params"][0],
-                        key=f"low_{arm_id}",
-                    )
-                    upper = st.number_input(
-                        "Upper Bound",
-                        value=config["params"][1],
-                        key=f"up_{arm_id}",
-                    )
-                    new_arms_config[arm_id] = {
-                        "distribution": dist,
-                        "params": [lower, upper],
-                    }
-            i += 1
+                std = st.number_input(
+                    "Standard Deviation",
+                    value=config["params"][1],
+                    key=f"std_{arm_id}",
+                )
+                new_arms_config[arm_id] = {
+                    "distribution": dist,
+                    "params": [mean, std],
+                }
+            elif dist == "uniform":
+                lower = st.number_input(
+                    "Lower Bound",
+                    value=config["params"][0],
+                    key=f"low_{arm_id}",
+                )
+                upper = st.number_input(
+                    "Upper Bound",
+                    value=config["params"][1],
+                    key=f"up_{arm_id}",
+                )
+                new_arms_config[arm_id] = {
+                    "distribution": dist,
+                    "params": [lower, upper],
+                }
+        i += 1
     return new_arms_config
 
 
@@ -94,7 +94,7 @@ def plot_distributions(distributions: dict) -> None:
             y = np.where((x >= lower) & (x <= upper), 1 / (upper - lower), 0)
             fig.add_trace(go.Scatter(x=x, y=y, mode="lines", name=arm_id))
 
-    fig.update_layout(title="True distributions", xaxis_title="Value", yaxis_title="Density")
+    fig.update_layout(xaxis_title="Value", yaxis_title="Density")
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -118,13 +118,14 @@ def reset_to_defaults() -> None:
     st.sidebar.success("Reverted to defaults!")
 
 
-# Display arm configuration in the left column
-new_arms_config = display_arm_configuration()
+with st.expander("Generated data", expanded=True):
+    # Display arm configuration in the left column
+    new_arms_config = display_arm_configuration()
 
-# Plot all distributions in the right column
-plot_distributions(new_arms_config)
+    # Plot all distributions in the right column
+    plot_distributions(new_arms_config)
 
-# Sidebar buttons for updating configuration and resetting to defaults
+    # Sidebar buttons for updating configuration and resetting to defaults
 if st.sidebar.button("Update Configuration"):
     update_configuration(new_arms_config)
 
