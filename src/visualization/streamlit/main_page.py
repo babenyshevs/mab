@@ -19,16 +19,17 @@ st.markdown(
     ## Navigation
     Welcome to the MAB vs. A/B Test Visualization App.
     Use the sidebar to navigate to different pages.
-    - Simulation: Adjust reward settings for different arms.
-    - Data: Compare the performance of A/B Testing and Multi-Armed Bandit.
-    - Algorithm: Learn about different algorithms used in A/B Testing and Multi-Armed Bandit.
+    - **theory**: some theory to understand, what's going on later
+    - **data**: data used for simulation (adjust reward settings for different arms)
+    - **algorithn**: set up different algorithms used in A/B Testing and Multi-Armed Bandit.
+    - **simulation**: compare the performance of A/B Testing and Multi-Armed Bandit.
 
     ---
     ## Author
         """
 )
 
-left_col, mid_col, right_col = st.columns(spec=[0.2, 0.4, 0.4], gap="large")
+left_col, mid_col, right_col = st.columns(spec=[0.2, 0.3, 0.5], gap="large")
 with left_col:
     st.image("./reports/figures/streamlit/author.jpg", width=200)
 with mid_col:
