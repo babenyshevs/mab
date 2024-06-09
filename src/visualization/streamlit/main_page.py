@@ -52,6 +52,12 @@ file_.close()
 
 
 st.markdown(
-    f"--- \n## Frag Magenta Chatbot. \n<img src='data:image/gif;base64,{data_url}' width='1000'>",
+    f"--- \n## <a href='https://www.telekom.de/hilfe/frag-magenta?samChecked=true' target='_blank'>Frag Magenta</a> \n<img src='data:image/gif;base64,{data_url}' width='1000'>",
     unsafe_allow_html=True,
+)
+
+st.markdown(
+    """
+    
+    """
 )

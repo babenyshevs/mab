@@ -140,49 +140,86 @@ def update_plots(
     """
     total_y = {algorithm: 0 for algorithm in st.session_state["cfg"]["algorithms"]}
     total_trials = {algorithm: 0 for algorithm in st.session_state["cfg"]["algorithms"]}
+    ab_name = st.session_state["cfg"]["algorithms"][0]
+    n_arms = len(arm_ids)
+    tmp_iter = int(iter / n_arms)
+    is_arms_balanced = (iter + 1) % n_arms == 0  # because in AB test all arms pulled at once
 
     for trace, arm_id in enumerate(arm_ids):
         for alg_name, go_scatter in go_scatters.items():
-            y = data[alg_name]["y"][arm_id][: iter + 1]
-            y_cum = data[alg_name]["y_cumulative"][arm_id][: iter + 1]
-            total_y[alg_name] += y_cum[-1]
-            go_scatter.data[trace].x = list(range(0, iter))
-            go_scatter.data[trace].y = y_cum if st.session_state["cfg"]["show_cumulative"] else y
+            # update only after all arms pulled in A/B test
+            if alg_name == ab_name:
+                if is_arms_balanced:
+                    y = data[alg_name]["y"][arm_id][: tmp_iter + 1]
+                    y_cum = data[alg_name]["y_cumulative"][arm_id][: tmp_iter + 1]
+                    total_y[alg_name] += y_cum[-1]
+                    go_scatter.data[trace].x = list(range(0, tmp_iter))
+                    go_scatter.data[trace].y = (
+                        y_cum if st.session_state["cfg"]["show_cumulative"] else y
+                    )
+                else:
+                    pass
+            else:
+                y = data[alg_name]["y"][arm_id][: iter + 1]
+                y_cum = data[alg_name]["y_cumulative"][arm_id][: iter + 1]
+                total_y[alg_name] += y_cum[-1]
+                go_scatter.data[trace].x = list(range(0, iter))
+                go_scatter.data[trace].y = (
+                    y_cum if st.session_state["cfg"]["show_cumulative"] else y
+                )
 
         for alg_name, go_hist in go_histograms.items():
-            y_array = np.array(data[alg_name]["y"][arm_id][: iter + 1])
-            y_nozero = y_array[y_array != 0]
-            if st.session_state["cfg"]["use_boostrap"]:
-                y_nozero = bootstrap(y_nozero, repeats=trials)
-            go_hist.data[trace].x = y_nozero
+            # update only after all arms pulled in A/B test
+            if alg_name == ab_name:
+                if is_arms_balanced:
+                    y_array = np.array(data[alg_name]["y"][arm_id][: tmp_iter + 1])
+                    y_nozero = y_array[y_array != 0]
+                    if st.session_state["cfg"]["use_boostrap"]:
+                        y_nozero = bootstrap(y_nozero, repeats=trials)
+                    go_hist.data[trace].x = y_nozero
+                else:
+                    pass
+            else:
+                y_array = np.array(data[alg_name]["y"][arm_id][: iter + 1])
+                y_nozero = y_array[y_array != 0]
+                if st.session_state["cfg"]["use_boostrap"]:
+                    y_nozero = bootstrap(y_nozero, repeats=trials)
+                go_hist.data[trace].x = y_nozero
 
         for alg_name, go_bar in go_bars.items():
-            try:
+            # update only after all arms pulled in A/B test
+            if alg_name == ab_name:
+                if is_arms_balanced:
+                    y = data[alg_name]["trials_count_cumulative"][arm_id][tmp_iter]
+                    total_trials[alg_name] += y
+                    go_bar.data[trace].x = [arm_id]
+                    go_bar.data[trace].y = [y]
+                else:
+                    pass
+            else:
                 y = data[alg_name]["trials_count_cumulative"][arm_id][iter]
                 total_trials[alg_name] += y
-            except IndexError:
-                y = np.array(data[alg_name]["trials_count_cumulative"][arm_id][trials])
-                total_trials[alg_name] = mab_trials
-            go_bar.data[trace].x = [arm_id]
-            go_bar.data[trace].y = [y]
+                go_bar.data[trace].x = [arm_id]
+                go_bar.data[trace].y = [y]
 
     for alg_name, st_scatter in st_scatters.items():
-        go_scatters[alg_name].update_layout(
-            title=f"{alg_name}: achieved {reward_var_name} ({int(total_y[alg_name])})"
-        )
-        st_scatter.plotly_chart(
-            go_scatters[alg_name],
-            use_container_width=True,
-        )
+        if (alg_name != ab_name) or (is_arms_balanced):
+            go_scatters[alg_name].update_layout(
+                title=f"{alg_name}: achieved {reward_var_name} ({int(total_y[alg_name])})"
+            )
+            st_scatter.plotly_chart(
+                go_scatters[alg_name],
+                use_container_width=True,
+            )
 
     for alg_name, st_histogram in st_histograms.items():
-        st_histogram.plotly_chart(go_histograms[alg_name], use_container_width=True)
+        if (alg_name != ab_name) or (is_arms_balanced):
+            st_histogram.plotly_chart(go_histograms[alg_name], use_container_width=True)
 
     for alg_name, st_bar in st_bars.items():
-        go_bars[alg_name].update_layout(
-            title=f"{alg_name}: total trials ({int(total_trials[alg_name])})"
-        )
-        st_bar.plotly_chart(go_bars[alg_name], use_container_width=True)
+        if (alg_name != ab_name) or (is_arms_balanced):
+            go_bars[alg_name].update_layout(title=f"{alg_name}: total trials ({int(iter + 1)})")
+            st_bar.plotly_chart(go_bars[alg_name], use_container_width=True)
 
 
 def main() -> None:
@@ -214,9 +251,9 @@ def main() -> None:
             arm_ids, reward_var_name, mab_trials
         )
 
-        progress_bar = st.sidebar.progress(0)
+        progress_bar = st.sidebar.progress(1)
 
-        for iter in range(st.session_state["cfg"]["current_iteration"], mab_trials):
+        for iter in range(st.session_state["cfg"].get("current_iteration", 0), mab_trials):
             update_plots(
                 iter,
                 data,

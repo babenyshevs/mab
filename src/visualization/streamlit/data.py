@@ -53,7 +53,7 @@ def generate_data(
         arm_data = reward_generator.pull_arm_n_times(arm_id, trials)
         data[algorithms[0]]["y"][arm_id] = arm_data
         data[algorithms[0]]["y_cumulative"][arm_id] = np.cumsum(arm_data)
-        data[algorithms[0]]["trials_count_cumulative"][arm_id] = np.arange(0, trials + 1, 1)
+        data[algorithms[0]]["trials_count_cumulative"][arm_id] = np.arange(0, trials, 1)
 
     # Bandit data (algos[1])
     mab_trials = trials * len(arm_ids)  # because in MAB only 1 arm is pulled per trial
