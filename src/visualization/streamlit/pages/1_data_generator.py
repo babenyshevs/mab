@@ -118,7 +118,7 @@ def reset_to_defaults() -> None:
     st.sidebar.success("Reverted to defaults!")
 
 
-with st.expander("Generated data", expanded=True):
+with st.expander("Generated data", expanded=False):
     # Display arm configuration in the left column
     new_arms_config = display_arm_configuration()
 

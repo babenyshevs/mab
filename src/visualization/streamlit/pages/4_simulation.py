@@ -37,10 +37,10 @@ def configure_controls(trials: int, mab_trials: int, arm_ids: List[str]) -> None
     st.session_state["cfg"]["sleep_time"] = st.sidebar.radio(
         "Graph delay (seconds):", st.session_state["cfg"]["graph_delays"], horizontal=True
     )
-    st.session_state["cfg"]["show_cumulative"] = st.sidebar.checkbox(
+    st.session_state["cfg"]["show_cumulative"] = st.sidebar.toggle(
         "Show cumulative", value=st.session_state["cfg"]["show_cumulative"]
     )
-    st.session_state["cfg"]["use_boostrap"] = st.sidebar.checkbox(
+    st.session_state["cfg"]["use_boostrap"] = st.sidebar.toggle(
         "Use bootstrap", value=st.session_state["cfg"]["use_boostrap"]
     )
 
@@ -236,7 +236,7 @@ def main() -> None:
     configure_controls(trials, mab_trials, arm_ids)
 
     if st.sidebar.button("Start"):
-        reward_generator = RewardGenerator(st.session_state["cfg"]["arms_config"])
+        reward_generator = RewardGenerator(config=st.session_state["cfg"]["arms_config"])
         bandit = MultiArmedBandit(reward_generator, st.session_state["cfg"]["mab_config"])
         data = generate_data(
             st.session_state["cfg"]["trials"]["value"],

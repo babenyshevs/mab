@@ -2,6 +2,7 @@ import random
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
+import pandas as pd
 
 
 class RewardGenerator:
@@ -9,7 +10,9 @@ class RewardGenerator:
     Class to generate rewards for a multi-armed bandit problem.
     """
 
-    def __init__(self, config: Dict[str, Dict[str, Any]], seed: int = 42) -> None:
+    def __init__(
+        self, config: Dict[str, Dict[str, Any]], seed: int = 42, data: pd.Series = None
+    ) -> None:
         """
         Initialize the RewardGenerator.
 
@@ -21,6 +24,7 @@ class RewardGenerator:
         """
         self.arm_configs: Dict[str, Dict[str, Any]] = config
         self.seed: int = seed
+        self.data = data
         random.seed(self.seed)
         np.random.seed(self.seed)  # To ensure np.round also follows the same seed
         self.distributions: Dict[str, Any] = {
@@ -54,7 +58,10 @@ class RewardGenerator:
         distribution_function: Any = self.distributions[distribution_name]
         params: List[Any] = arm_config.get("params", [])
         reward: float = np.round(distribution_function(*params), 4)
-
+        if isinstance(self.data, pd.Series):
+            reward = np.round(
+                np.mean(self.data.sample(n=100, replace=True, random_state=self.seed)), 4
+            )
         return reward
 
     def pull_arm_n_times(self, arm_id: str, n_times: int) -> List[float]:
