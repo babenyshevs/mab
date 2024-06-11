@@ -28,7 +28,15 @@ if "data_mde" in st.session_state.keys():
 
     if selected_cols:
         analyzer = SampleSizeGrid(variables=selected_cols, data=st.session_state["data_mde"])
-        distributions = analyzer.plot_distributions(return_fig=True)
-        st.plotly_chart(distributions, use_container_width=True, theme="streamlit")
         obs_needed = analyzer.plot_observation_requirements(return_fig=True)
         st.plotly_chart(obs_needed, use_container_width=True, theme="streamlit")
+        distributions = analyzer.plot_distributions(return_fig=True)
+        st.plotly_chart(distributions, use_container_width=True, theme="streamlit")
+
+    with st.expander("source", expanded=False):
+        st.markdown(
+            """
+            For power analysis **statmodels** are used:
+            statsmodels.stats.power.TTestIndPower
+            """
+        )

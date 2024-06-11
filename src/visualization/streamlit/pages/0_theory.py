@@ -222,12 +222,8 @@ st.markdown(
     """
 )
 with st.expander("example", expanded=True):
-    cols2 = st.columns(spec=2, gap="large")
-    with cols2[0]:
-        st.image("./reports/figures/streamlit/production_metrics_means.png", width=500)
-
-    with cols2[1]:
-        st.image("./reports/figures/streamlit/production_metrics_mde.png", width=500)
+    st.image("./reports/figures/streamlit/production_metrics_mde.png", width=500)
+    st.image("./reports/figures/streamlit/production_metrics_means.png", width=500)
     st.markdown(
         """
     These are anonymized production metrics of a Chatbot.
