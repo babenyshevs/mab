@@ -16,7 +16,7 @@ st.markdown(
     """
     ---
     # A/B Test and Multi-Armed Bandit for service metrics improvement
-    ### <a href='https://ab-vs-mab.streamlit.app/' target='_blank'>https://ab-vs-mab.streamlit.app/</a>
+    ### <a href='https://ab-mab.streamlit.app/' target='_blank'>https://ab-mab.streamlit.app/</a>
     ## Navigation
     Welcome to the MAB vs. A/B Test Visualization App.
     Use the sidebar to navigate to different pages.

@@ -118,12 +118,8 @@ st.markdown(
     """
 )
 with st.expander("example", expanded=False):
-    cols1 = st.columns(spec=2, gap="large")
-    with cols1[0]:
-        st.image("./reports/figures/streamlit/spurious_corr.png", width=500)
-
-    with cols1[1]:
-        st.image("./reports/figures/streamlit/spurious_corr2.png", width=500)
+    st.image("./reports/figures/streamlit/spurious_corr.png", width=500)
+    st.image("./reports/figures/streamlit/spurious_corr2.png", width=500)
     st.markdown(
         """
     See more at [National Geographic](https://www.nationalgeographic.com/science/article/nick-cage-movies-vs-drownings-and-more-strange-but-spurious-correlations).
